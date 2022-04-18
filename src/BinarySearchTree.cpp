@@ -11,8 +11,6 @@ using namespace std;
 
 // forward declarations
 double strToDouble(string str, char ch);
-
-// define a structure to hold bid information
 struct Bid {
     string bidId; // unique identifier
     string title;
@@ -23,58 +21,45 @@ struct Bid {
     }
 };
 
-// Internal structure for tree node
-struct Node {
-    Bid bid;
+// define a structure to hold bid information
 
-    // create the key for the given bid
-    unsigned int key = hash(atoi(bidId.c_str()));
-    Node* node = &(nodes.at(key));
-
-    // if entry found for the key
-    if (node != nullptr && node->key != UINT_MAX
-            && node->bid.bidId.compare(bidId) == 0) {
-        return node->bid;
-    }
-
-    // if no entry found for the key
-    if (node == nullptr || node->key == UINT_MAX) {
-        return bid;
-    }
-
-    while (node != nullptr) {
-        // if the current node matches, return it
-        if (node->key != UINT_MAX && node->bid.bidId.compare(bidId) == 0) {
-            return node->bid;
-        }
-        node = node->next;
-    }
-
-    return bid;
-
-};
-
-//============================================================================
-// Binary Search Tree class definition
-//============================================================================
-
-/**
- * Define a class containing data members and methods to
- * implement a binary search tree
- */
 class BinarySearchTree {
 
 private:
-    Node* root;
+    
+    // Internal structure for tree node
+    struct Node {
+        Bid bid;
+        // create the key for the given bid
+        unsigned key;
+        
+        Node* left;
+        Node* right;
 
+        unsigned int Hash(int key) {
+            unsigned bucketIndex;
+            bucketIndex = key % 10;
+            return bucketIndex;
+        }
+
+        Node(Bid aBid) {
+            bid = aBid;
+            key = Hash(atoi(bid.bidId.c_str()));
+        }
+    };
+    Node* root;
     void addNode(Node* node, Bid bid);
     void inOrder(Node* node);
+    void postOrder(Node* node);
+    void preOrder(Node* node);
     Node* removeNode(Node* node, string bidId);
 
 public:
     BinarySearchTree();
     virtual ~BinarySearchTree();
     void InOrder();
+    void PostOrder();
+    void PreOrder();
     void Insert(Bid bid);
     void Remove(string bidId);
     Bid Search(string bidId);
@@ -86,6 +71,7 @@ public:
 BinarySearchTree::BinarySearchTree() {
     // FixMe (1): initialize housekeeping variables
     //root is equal to nullptr
+    this->root = nullptr;
 }
 
 /**
@@ -93,6 +79,7 @@ BinarySearchTree::BinarySearchTree() {
  */
 BinarySearchTree::~BinarySearchTree() {
     // recurse from root deleting every node
+
 }
 
 /**
@@ -101,6 +88,7 @@ BinarySearchTree::~BinarySearchTree() {
 void BinarySearchTree::InOrder() {
     // FixMe (2): In order root
     // call inOrder fuction and pass root 
+
 }
 
 /**
@@ -151,6 +139,7 @@ Bid BinarySearchTree::Search(string bidId) {
         // if bid is smaller than current node then traverse left
         // else larger so traverse right
     Bid bid;
+
     return bid;
 }
 
@@ -281,7 +270,7 @@ int main(int argc, char* argv[]) {
         bidKey = argv[2];
         break;
     default:
-        csvPath = "eBid_Monthly_Sales_Dec_2016.csv";
+        csvPath = "res/eBid_Monthly_Sales_Dec_2016.csv";
         bidKey = "98109";
     }
 
@@ -289,7 +278,7 @@ int main(int argc, char* argv[]) {
     clock_t ticks;
 
     // Define a binary search tree to hold all bids
-    BinarySearchTree* bst;
+    BinarySearchTree* bst = nullptr;
 
     Bid bid;
 
