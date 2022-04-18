@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : BinarySearchTree.cpp
-// Author      : Amanda Purnhagen
+// Author      : JYour name
 // Version     : 1.0
 // Copyright   : Copyright © 2017 SNHU COCE
 // Description : Hello World in C++, Ansi-style
