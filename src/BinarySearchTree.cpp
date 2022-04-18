@@ -6,7 +6,7 @@
 using namespace std;
 
 //============================================================================
-// Global definitions visible to all methods and classes
+// Global definitions visible to all methods and classes 
 //============================================================================
 
 // forward declarations
