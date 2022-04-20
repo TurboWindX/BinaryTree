@@ -11,6 +11,7 @@ using namespace std;
 
 // forward declarations
 double strToDouble(string str, char ch);
+
 struct Bid {
     string bidId; // unique identifier
     string title;
@@ -33,8 +34,8 @@ private:
         // create the key for the given bid
         unsigned key;
         
-        Node* left;
-        Node* right;
+        Node* left = nullptr;
+        Node* right = nullptr;
 
         unsigned int Hash(int key) {
             unsigned bucketIndex;
@@ -43,12 +44,12 @@ private:
         }
 
         Node(Bid aBid) {
-            bid = aBid;
-            key = Hash(atoi(bid.bidId.c_str()));
+            this->bid = aBid;
+            key = Hash(atoi(this->bid.bidId.c_str()));
         }
     };
     Node* root;
-    void addNode(Node* node, Bid bid);
+    void addNode(Node* parentNode, Node* newNode);
     void inOrder(Node* node);
     void postOrder(Node* node);
     void preOrder(Node* node);
@@ -82,40 +83,31 @@ BinarySearchTree::~BinarySearchTree() {
 
 }
 
-/**
- * Traverse the tree in order
- */
 void BinarySearchTree::InOrder() {
-    // FixMe (2): In order root
-    // call inOrder fuction and pass root 
-
+    inOrder(root);
 }
 
-/**
- * Traverse the tree in post-order
- */
 void BinarySearchTree::PostOrder() {
-    // FixMe (3): Post order root
-    // postOrder root
+    postOrder(root);
 }
 
-/**
- * Traverse the tree in pre-order
- */
 void BinarySearchTree::PreOrder() {
-    // FixMe (4): Pre order root
-    // preOrder root
+    preOrder(root);
 }
 
 /**
  * Insert a bid
  */
 void BinarySearchTree::Insert(Bid bid) {
-    // FIXME (5) Implement inserting a bid into the tree
-    // if root equarl to null ptr
-      // root is equal to new node bid
-    // else
-      // add Node root and bid
+    Node* newNode = new Node(bid);
+    if (root == nullptr) {
+        root = newNode;
+    }
+    else {
+        addNode(root,newNode);
+    }
+
+    
 }
 
 /**
@@ -124,15 +116,16 @@ void BinarySearchTree::Insert(Bid bid) {
 void BinarySearchTree::Remove(string bidId) {
     // FIXME (6) Implement removing a bid from the tree
     // remove node root bidID
+
 }
 
-/**
- * Search for a bid
- */
 Bid BinarySearchTree::Search(string bidId) {
     // FIXME (7) Implement searching the tree for a bid
     // set current node equal to root
+    Node* node = root;
+    if (node != nullptr) {
 
+    }
     // keep looping downwards until bottom reached or matching bidId found
         // if match found, return current bid
 
@@ -143,46 +136,48 @@ Bid BinarySearchTree::Search(string bidId) {
     return bid;
 }
 
-/**
- * Add a bid to some node (recursive)
- *
- * @param node Current node in tree
- * @param bid Bid to be added
- */
-void BinarySearchTree::addNode(Node* node, Bid bid) {
-    // FIXME (8) Implement inserting a bid into the tree
-    // if node is larger then add to left
-        // if no left node
-            // this node becomes left
-        // else recurse down the left node
-    // else
-        // if no right node
-            // this node becomes right
-        //else
-            // recurse down the left node
+void BinarySearchTree::addNode(Node* parentNode, Node* newNode) {
+    if (parentNode->key <= newNode->key) {
+        if (parentNode->left == nullptr) {
+            parentNode->left = newNode;
+        }
+        else {
+            addNode(parentNode->left, newNode);
+        }
+    }
+    if(parentNode->key > newNode->key) {
+        if (parentNode->right == nullptr) {
+            parentNode->right = newNode;
+        }
+        else {
+            addNode(parentNode->right, newNode);
+        }
+    }
 }
+
 void BinarySearchTree::inOrder(Node* node) {
-      // FixMe (9): Pre order root
-      //if node is not equal to null ptr
-      //InOrder not left
-      //output bidID, title, amount, fund
-      //InOder right
+    if (node != nullptr) {
+        inOrder(node->left);
+        cout << node->key << endl;
+        inOrder(node->right);
+    }
 }
+
 void BinarySearchTree::postOrder(Node* node) {
-      // FixMe (10): Pre order root
-      //if node is not equal to null ptr
-      //postOrder left
-      //postOrder right
-      //output bidID, title, amount, fund
+    if (node != nullptr) {
+        postOrder(node->left);
+        postOrder(node->right);
+        cout << node->key << endl;
+    }
 
 }
 
-void BinarySearchTree::preOrder(Node* node) {
-      // FixMe (11): Pre order root
-      //if node is not equal to null ptr
-      //output bidID, title, amount, fund
-      //postOrder left
-      //postOrder right      
+void BinarySearchTree::preOrder(Node* node) { 
+    if (node != nullptr) {
+        cout << node->key << endl;
+        preOrder(node->left);
+        preOrder(node->right);
+    }
 }
 
 //============================================================================
@@ -232,7 +227,6 @@ void loadBids(string csvPath, BinarySearchTree* bst) {
 
             //cout << "Item: " << bid.title << ", Fund: " << bid.fund << ", Amount: " << bid.amount << endl;
 
-            // push this bid to the end
             bst->Insert(bid);
         }
     } catch (csv::Error &e) {
