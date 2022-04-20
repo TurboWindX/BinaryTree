@@ -120,20 +120,24 @@ void BinarySearchTree::Remove(string bidId) {
 }
 
 Bid BinarySearchTree::Search(string bidId) {
-    // FIXME (7) Implement searching the tree for a bid
-    // set current node equal to root
-    Node* node = root;
-    if (node != nullptr) {
-
+    Node* node = root; //init for search
+    Bid bid; //init
+    unsigned key = atoi(bidId.c_str()) % 10;  //hash bidid
+    while (node != nullptr) {//looper
+        if (node->key == key) {//found key
+            if (node->bid.bidId == bidId) {//good bidid
+                return node->bid;//return bid
+            }
+        }
+        if (node->key <= key) {
+            node = node->left;
+        }
+        else {
+            node = node->right;
+        } 
     }
-    // keep looping downwards until bottom reached or matching bidId found
-        // if match found, return current bid
 
-        // if bid is smaller than current node then traverse left
-        // else larger so traverse right
-    Bid bid;
-
-    return bid;
+    return bid;//no bid found :(
 }
 
 void BinarySearchTree::addNode(Node* parentNode, Node* newNode) {
@@ -158,7 +162,7 @@ void BinarySearchTree::addNode(Node* parentNode, Node* newNode) {
 void BinarySearchTree::inOrder(Node* node) {
     if (node != nullptr) {
         inOrder(node->left);
-        cout << node->key << endl;
+        cout << node->key << ":" << node->bid.bidId << endl;
         inOrder(node->right);
     }
 }
@@ -257,7 +261,7 @@ int main(int argc, char* argv[]) {
     switch (argc) {
     case 2:
         csvPath = argv[1];
-        bidKey = "98109";
+        bidKey = "98004";
         break;
     case 3:
         csvPath = argv[1];
@@ -265,7 +269,7 @@ int main(int argc, char* argv[]) {
         break;
     default:
         csvPath = "res/eBid_Monthly_Sales_Dec_2016.csv";
-        bidKey = "98109";
+        bidKey = "98004";
     }
 
     // Define a timer variable
