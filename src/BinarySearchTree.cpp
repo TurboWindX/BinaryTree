@@ -59,7 +59,6 @@ private:
             current = current->left;
         return current;
     };
-
     void removeNode(Node* node, string bidId)
     {
         unsigned key = atoi(bidId.c_str()) % 7;
@@ -151,7 +150,13 @@ BinarySearchTree::BinarySearchTree() {
  */
 BinarySearchTree::~BinarySearchTree() {
     // recurse from root deleting every node
-
+    Node* node = root;
+    if (node != nullptr) {
+        inOrder(node->left);
+        cout << node->key << ":" << node->bid.bidId << endl;
+        inOrder(node->right);
+        free(node);
+    }
 }
 
 void BinarySearchTree::InOrder() {
@@ -397,6 +402,9 @@ int main(int argc, char* argv[]) {
 
         case 4:
             bst->Remove(bidKey);
+            break;
+        case 9:
+            bst->~BinarySearchTree();
             break;
         }
     }
