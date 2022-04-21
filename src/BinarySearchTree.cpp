@@ -103,7 +103,10 @@ private:
                     //2.Copy content of said successor to the node
                     //3.Delete inorder successor
                     if (node->left != nullptr && node->right != nullptr) {
-                        
+
+                        parentNode->right = minValue(node->right);
+                        parentNode->right->left = node->left;
+                        return;
                     }
                 }
                 else {//good key but not good bid
@@ -180,7 +183,7 @@ void BinarySearchTree::Remove(string bidId) {
 Bid BinarySearchTree::Search(string bidId) {
     Node* node = root; //init for search
     Bid bid; //init
-    unsigned key = atoi(bidId.c_str()) % 6173;  //hash bidid
+    unsigned key = atoi(bidId.c_str()) % 7;  //hash bidid
     while (node != nullptr) {//looper
         if (node->key == key) {//found key
             if (node->bid.bidId == bidId) {//good bidid
