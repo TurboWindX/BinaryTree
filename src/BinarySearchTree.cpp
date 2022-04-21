@@ -39,7 +39,7 @@ private:
 
         unsigned int Hash(int key) {
             unsigned bucketIndex;
-            bucketIndex = key % 10;
+            bucketIndex = key % 7;
             return bucketIndex;
         }
 
@@ -53,7 +53,75 @@ private:
     void inOrder(Node* node);
     void postOrder(Node* node);
     void preOrder(Node* node);
-    Node* removeNode(Node* node, string bidId);
+    Node* minValue(Node* node) {
+        Node* current = root;
+        while (current && current->left != NULL)
+            current = current->left;
+        return current;
+    };
+
+    void removeNode(Node* node, string bidId)
+    {
+        unsigned key = atoi(bidId.c_str()) % 7;
+        Node* parentNode = nullptr;
+        while (node != nullptr) {
+            if (node->key == key) {
+                if (node->bid.bidId == bidId) {
+                    int c = 0;
+                    // IS A LEAF
+                    if (node->left == nullptr && node->right == nullptr) {
+                        if (parentNode != nullptr) {
+                            parentNode->left = nullptr;
+                        }
+                        free(node);
+                        return;
+                    }
+
+                    //LEFT NOT NULL
+                    //RIGHT NULL
+                    if(node->left != nullptr && node->right == nullptr){
+                        if (parentNode != nullptr) {
+                            parentNode->left = node->left;
+                        }
+                        free(node);
+                        return;
+                    }
+                    //RIGHT NOT NULL
+                    //LEFT NULL
+                    if (node->left == nullptr && node->right != nullptr) {
+                        if (parentNode != nullptr) {
+                            parentNode->left = node->right;
+                        }
+                        free(node);
+                        return;
+                    }
+                    
+                    //RIGHT NOT NULL
+                    //LEFT NOT NULL
+                    //node to be deleted has two children
+                    //1.Find inorder successor of node
+                    //2.Copy content of said successor to the node
+                    //3.Delete inorder successor
+                    if (node->left != nullptr && node->right != nullptr) {
+                        
+                    }
+                }
+                else {//good key but not good bid
+                    parentNode = node;
+                    node = node->left;
+                }
+            }
+            else if (node->key < key) {
+                parentNode = node;
+                node = node->left;
+            }
+            else if (node->key > key){
+                parentNode = node;
+                node = node->right;
+            }
+            
+        }    
+    }
 
 public:
     BinarySearchTree();
@@ -95,9 +163,6 @@ void BinarySearchTree::PreOrder() {
     preOrder(root);
 }
 
-/**
- * Insert a bid
- */
 void BinarySearchTree::Insert(Bid bid) {
     Node* newNode = new Node(bid);
     if (root == nullptr) {
@@ -106,23 +171,16 @@ void BinarySearchTree::Insert(Bid bid) {
     else {
         addNode(root,newNode);
     }
-
-    
 }
 
-/**
- * Remove a bid
- */
 void BinarySearchTree::Remove(string bidId) {
-    // FIXME (6) Implement removing a bid from the tree
-    // remove node root bidID
-
+    removeNode(root,bidId);
 }
 
 Bid BinarySearchTree::Search(string bidId) {
     Node* node = root; //init for search
     Bid bid; //init
-    unsigned key = atoi(bidId.c_str()) % 10;  //hash bidid
+    unsigned key = atoi(bidId.c_str()) % 6173;  //hash bidid
     while (node != nullptr) {//looper
         if (node->key == key) {//found key
             if (node->bid.bidId == bidId) {//good bidid
@@ -139,6 +197,8 @@ Bid BinarySearchTree::Search(string bidId) {
 
     return bid;//no bid found :(
 }
+
+
 
 void BinarySearchTree::addNode(Node* parentNode, Node* newNode) {
     if (parentNode->key <= newNode->key) {
@@ -184,7 +244,7 @@ void BinarySearchTree::preOrder(Node* node) {
     }
 }
 
-//============================================================================
+
 // Static methods used for testing
 //============================================================================
 
@@ -261,7 +321,7 @@ int main(int argc, char* argv[]) {
     switch (argc) {
     case 2:
         csvPath = argv[1];
-        bidKey = "98004";
+        bidKey = "98005";
         break;
     case 3:
         csvPath = argv[1];
@@ -269,7 +329,7 @@ int main(int argc, char* argv[]) {
         break;
     default:
         csvPath = "res/eBid_Monthly_Sales_Dec_2016.csv";
-        bidKey = "98004";
+        bidKey = "98005";
     }
 
     // Define a timer variable
