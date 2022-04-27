@@ -1,2 +1,2 @@
 # BinaryTree
-Binary tree and stuff ! ! !
+BST, time complexity, memory management
